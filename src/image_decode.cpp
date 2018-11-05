@@ -7,6 +7,7 @@
 
 BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wunused-function")
 
+#if LIBRARY_TINY_EXR
 BX_PRAGMA_DIAGNOSTIC_PUSH()
 BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wtype-limits")
 BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wunused-parameter")
@@ -22,7 +23,9 @@ BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4505) // warning C4505: 'tinyexr::miniz::def_r
 #define TINYEXR_IMPLEMENTATION
 #include <tinyexr/tinyexr.h>
 BX_PRAGMA_DIAGNOSTIC_POP()
+#endif
 
+#if LIBRARY_LODE_PNG
 BX_PRAGMA_DIAGNOSTIC_PUSH();
 BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4127) // warning C4127: conditional expression is constant
 #define LODEPNG_NO_COMPILE_ENCODER
@@ -32,6 +35,7 @@ BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4127) // warning C4127: conditional expression
 #define LODEPNG_NO_COMPILE_CPP
 #include <lodepng/lodepng.cpp>
 BX_PRAGMA_DIAGNOSTIC_POP();
+#endif
 
 void* lodepng_malloc(size_t _size)
 {
@@ -70,6 +74,7 @@ namespace bimg
 {
 	static ImageContainer* imageParseLodePng(bx::AllocatorI* _allocator, const void* _data, uint32_t _size, bx::Error* _err)
 	{
+#if LIBRARY_LODE_PNG
 		BX_ERROR_SCOPE(_err);
 
 		static uint8_t pngMagic[] = { 0x89, 0x50, 0x4E, 0x47, 0x0d, 0x0a };
@@ -277,10 +282,14 @@ namespace bimg
 		lodepng_free(data);
 
 		return output;
+#else
+        return NULL;
+#endif
 	}
 
 	static ImageContainer* imageParseTinyExr(bx::AllocatorI* _allocator, const void* _data, uint32_t _size, bx::Error* _err)
 	{
+#if LIBRARY_TINY_EXR
 		BX_ERROR_SCOPE(_err);
 
 		EXRVersion exrVersion;
@@ -463,10 +472,14 @@ namespace bimg
 		}
 
 		return output;
+#else
+        return NULL;
+#endif
 	}
 
 	static ImageContainer* imageParseStbImage(bx::AllocatorI* _allocator, const void* _data, uint32_t _size, bx::Error* _err)
 	{
+#if LIBRARY_STB_IMAGE
 		BX_ERROR_SCOPE(_err);
 
 		const int isHdr = stbi_is_hdr_from_memory( (const uint8_t*)_data, (int)_size);
@@ -519,10 +532,14 @@ namespace bimg
 		stbi_image_free(data);
 
 		return output;
+#else
+        return NULL;
+#endif
 	}
 
 	static ImageContainer* imageParseJpeg(bx::AllocatorI* _allocator, const void* _data, uint32_t _size, bx::Error* _err)
 	{
+#if LIBRARY_JPEG
 		bx::MemoryReader reader(_data, _size);
 
 		bx::Error err;
@@ -652,6 +669,9 @@ namespace bimg
 		}
 
 		return image;
+#else
+        return NULL;
+#endif
 	}
 
 	ImageContainer* imageParse(bx::AllocatorI* _allocator, const void* _data, uint32_t _size, TextureFormat::Enum _dstFormat, bx::Error* _err)
