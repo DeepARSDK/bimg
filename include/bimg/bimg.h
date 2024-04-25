@@ -129,6 +129,8 @@ namespace bimg
 			D32F,
 			D0S8,
 
+			RGB16,
+
 			Count
 		};
 	};

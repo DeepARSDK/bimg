@@ -97,6 +97,7 @@ namespace bimg
 		{  24, 1, 1,  3, 1, 1, 24, 0,  0,  0,  0,  0, uint8_t(bx::EncodingType::Float) }, // D24F
 		{  32, 1, 1,  4, 1, 1, 32, 0,  0,  0,  0,  0, uint8_t(bx::EncodingType::Float) }, // D32F
 		{   8, 1, 1,  1, 1, 1,  0, 8,  0,  0,  0,  0, uint8_t(bx::EncodingType::Unorm) }, // D0S8
+		{  48, 1, 1,  3, 1, 1,  0, 8, 16, 16, 16,  0, uint8_t(bx::EncodingType::Unorm) }, // RGB16
 	};
 	BX_STATIC_ASSERT(TextureFormat::Count == BX_COUNTOF(s_imageBlockInfo) );
 
@@ -178,6 +179,7 @@ namespace bimg
 		"D24F",       // D24F
 		"D32F",       // D32F
 		"D0S8",       // D0S8
+		"RGB16",      // RGB16
 	};
 	BX_STATIC_ASSERT(TextureFormat::Count == BX_COUNTOF(s_textureFormatName) );
 
@@ -801,6 +803,7 @@ namespace bimg
 		{ NULL,               NULL                 }, // D24F
 		{ bx::packR32F,       bx::unpackR32F       }, // D32F
 		{ bx::packR8,         bx::unpackR8         }, // D0S8
+		{ bx::packRgb16,      bx::unpackRgb16      }, // RGB16
 	};
 	BX_STATIC_ASSERT(TextureFormat::Count ==       BX_COUNTOF(s_packUnpack) );
 
